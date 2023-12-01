@@ -1,0 +1,32 @@
+Vagrant.configure("2") do |config|
+  config.vm.box = "ubuntu/bionic64"
+  config.vm.define "ubuntu"
+  config.vm.hostname = "ubuntu" 
+  config.vm.provider "virtualbox" do |vb|
+    vb.memory = "8192"
+    vb.cpus=4
+  end
+
+  config.vm.provision "shell", inline: <<-SHELL
+    apt-get update
+    apt get upgrade -y
+    apt-get install python3.6 -y
+    apt-get install git -y
+  SHELL
+
+  config.vm.provision "shell", inline: <<-SHELL
+    apt-get install python3-pip -y
+    apt-get install python3-dev libpq-dev -y
+  SHELL
+
+  config.vm.provision "shell", inline: <<-SHELL
+    pip3 install psycopg2 Django
+  SHELL
+
+  config.vm.synced_folder "scripts/", "/home/vagrant/scripts/"
+    
+  config.vm.provision "shell", inline: <<-SHELL
+    touch scripts/allo.txt
+  SHELL
+
+end
